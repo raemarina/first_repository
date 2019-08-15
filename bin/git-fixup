@@ -1,0 +1,15 @@
+#!/bin/sh
+
+test -z "$TMUX" || alias fzf=fzf-tmux
+
+git log --pretty=oneline -n 20 \
+  | fzf --height '100%' \
+        --bind 'tab:toggle-preview' \
+        --bind 'alt-down:preview-page-down' \
+        --bind 'alt-up:preview-page-up' \
+        --bind 'tab:toggle-preview' \
+        --preview 'git show --color=always --pretty=fuller --stat {+1}' \
+        --preview-window='up:50%' \
+        --prompt 'Select commit: ' \
+  | awk '{ print $1 }' \
+  | xargs git commit --fixup
